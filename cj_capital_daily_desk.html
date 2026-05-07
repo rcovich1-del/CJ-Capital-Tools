@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CJ Capital — Daily Desk</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0a0c0f;
+    --surface: #111318;
+    --surface2: #181c22;
+    --border: #1e2530;
+    --accent: #00d4a8;
+    --accent2: #f59e0b;
+    --accent3: #3b82f6;
+    --danger: #ef4444;
+    --text: #e2e8f0;
+    --text-muted: #64748b;
+    --text-dim: #94a3b8;
+    --green: #22c55e;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    padding: 24px;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .brand {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .brand-name {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  .brand-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+
+  .header-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+  }
+
+  .date-display {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  .day-badge {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    padding: 3px 10px;
+    border-radius: 2px;
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  .reset-btn {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    padding: 4px 12px;
+    border-radius: 2px;
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+  }
+
+  .reset-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* Progress bar */
+  .progress-bar-wrap {
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .progress-bar-bg {
+    flex: 1;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent3));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  .progress-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    min-width: 60px;
+    text-align: right;
+  }
+
+  /* Layout */
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .layout-wide {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .layout-full {
+    margin-bottom: 16px;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .card-icon {
+    font-size: 13px;
+    width: 20px;
+    text-align: center;
+  }
+
+  .card-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    flex: 1;
+  }
+
+  .card-count {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  .card-count span {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .card-body {
+    padding: 8px 0;
+  }
+
+  /* Checklist items */
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 7px 16px;
+    cursor: pointer;
+    transition: background 0.1s;
+    border-left: 2px solid transparent;
+  }
+
+  .check-item:hover {
+    background: rgba(255,255,255,0.02);
+  }
+
+  .check-item.checked {
+    border-left-color: var(--accent);
+    background: rgba(0,212,168,0.03);
+  }
+
+  .check-item.checked .check-label {
+    color: var(--text-muted);
+    text-decoration: line-through;
+    text-decoration-color: var(--text-muted);
+  }
+
+  .check-box {
+    width: 14px;
+    height: 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 2px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    background: transparent;
+  }
+
+  .check-item.checked .check-box {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .check-mark {
+    display: none;
+    color: var(--bg);
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .check-item.checked .check-mark {
+    display: block;
+  }
+
+  .check-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .check-label {
+    font-size: 12.5px;
+    color: var(--text);
+    line-height: 1.4;
+    transition: color 0.15s;
+  }
+
+  .check-tool {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-muted);
+  }
+
+  .check-tool a {
+    color: var(--accent3);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .check-tool a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+
+  /* Non-negotiable tag */
+  .tag-nn {
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    padding: 1px 5px;
+    border-radius: 2px;
+    background: rgba(239,68,68,0.12);
+    color: var(--danger);
+    border: 1px solid rgba(239,68,68,0.2);
+    text-transform: uppercase;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  .tag-new {
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: 0.12em;
+    padding: 1px 5px;
+    border-radius: 2px;
+    background: rgba(0,212,168,0.1);
+    color: var(--accent);
+    border: 1px solid rgba(0,212,168,0.2);
+    text-transform: uppercase;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  /* Day selector */
+  .day-selector {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
+
+  .day-btn {
+    font-family: var(--mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    padding: 6px 14px;
+    border-radius: 3px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+  }
+
+  .day-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .day-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+  }
+
+  /* Reminder banner */
+  .reminder {
+    background: rgba(245,158,11,0.06);
+    border: 1px solid rgba(245,158,11,0.15);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .reminder-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .reminder-text {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent2);
+    letter-spacing: 0.05em;
+    line-height: 1.5;
+  }
+
+  .reminder-text strong {
+    font-weight: 600;
+  }
+
+  /* Section divider */
+  .section-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    padding: 6px 16px 4px;
+    border-top: 1px solid var(--border);
+    margin-top: 4px;
+  }
+
+  .section-label:first-child {
+    border-top: none;
+    margin-top: 0;
+  }
+
+  /* Rhythm footer */
+  .rhythm {
+    margin-top: 20px;
+    padding: 14px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .rhythm-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .rhythm-text {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+
+  /* Scrollable day section */
+  .day-section {
+    display: none;
+  }
+  .day-section.active {
+    display: block;
+  }
+
+  /* Analyze tab reminder */
+  .analyze-reminder {
+    background: rgba(59,130,246,0.06);
+    border: 1px solid rgba(59,130,246,0.2);
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin: 8px 16px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent3);
+    letter-spacing: 0.05em;
+  }
+
+  /* Screener tier reminder */
+  .tier-reminder {
+    background: rgba(0,212,168,0.04);
+    border: 1px solid rgba(0,212,168,0.1);
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin: 8px 16px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">
+    <div class="brand-name">CJ Capital</div>
+    <div class="brand-title">Daily Desk Calendar</div>
+  </div>
+  <div class="header-right">
+    <div class="date-display" id="dateDisplay"></div>
+    <div class="day-badge" id="dayBadge"></div>
+    <button class="reset-btn" onclick="resetAll()">↺ Reset Day</button>
+  </div>
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+  </div>
+  <div class="progress-label" id="progressLabel">0 / 0</div>
+</div>
+
+<div class="reminder">
+  <div class="reminder-icon">⚡</div>
+  <div class="reminder-text">
+    <strong>Non-negotiable rule:</strong> Always review the <strong>Analyze tab risk profile</strong> before entering or managing any options trade. No exceptions.
+  </div>
+</div>
+
+<!-- Day selector -->
+<div class="day-selector">
+  <button class="day-btn" onclick="setDay('mon')">MON</button>
+  <button class="day-btn" onclick="setDay('tue')">TUE</button>
+  <button class="day-btn" onclick="setDay('wed')">WED</button>
+  <button class="day-btn" onclick="setDay('thu')">THU</button>
+  <button class="day-btn" onclick="setDay('fri')">FRI</button>
+  <button class="day-btn" onclick="setDay('sat')">SAT</button>
+  <button class="day-btn" onclick="setDay('sun')">SUN</button>
+</div>
+
+<!-- ===================== EVERY DAY ===================== -->
+<div class="layout">
+
+  <!-- PRE-MARKET -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">🌅</div>
+      <div class="card-title">Pre-Market</div>
+      <div class="card-count"><span id="pm-done">0</span>/<span id="pm-total">0</span></div>
+    </div>
+    <div class="card-body" id="pm-body">
+
+      <div class="section-label">Study</div>
+      <div class="check-item" onclick="toggle(this)" data-group="pm">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">Anki SR deck — 15 cards <span class="tag-nn">non-neg</span></div>
+          <div class="check-tool"><a href="#">→ Open Anki HTML file</a></div>
+        </div>
+      </div>
+
+      <div class="section-label">Check-In</div>
+      <div class="check-item" onclick="toggle(this)" data-group="pm">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">Daily check-in — mental state, regime, IVR <span class="tag-nn">non-neg</span></div>
+          <div class="check-tool"><a href="#">→ Daily Check-in HTML → Claude</a></div>
+        </div>
+      </div>
+
+      <div class="section-label">Market Scan</div>
+      <div class="check-item" onclick="toggle(this)" data-group="pm">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">SPY/QQQ trend — above/below SMAs?</div>
+          <div class="check-tool"><a href="https://www.barchart.com" target="_blank">→ Barchart</a> · TOS</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)" data-group="pm">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">VIX level — note premium environment</div>
+          <div class="check-tool">TOS · <a href="https://finviz.com" target="_blank">→ Finviz</a></div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)" data-group="pm">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">Sector context — any sector ETF strength/weakness?</div>
+          <div class="check-tool">TOS — XLK, XLF, XLE, XLV, XLY</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)" data-group="pm">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">Set Regime tag for the day</div>
+          <div class="check-tool">Bullish / Bearish / Neutral / Choppy</div>
+        </div>
+      </div>
+
+      <div class="section-label">Watchlist (from night before)</div>
+      <div class="check-item" onclick="toggle(this)" data-group="pm">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">Review 2-3 shortlisted candidates <span class="tag-new">new</span></div>
+          <div class="check-tool">Research done — execution session only</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)" data-group="pm">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">Review open positions on Analyze tab</div>
+          <div class="check-tool">TOS → Analyze tab</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)" data-group="pm">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">Any positions at ≤ 10 DTE?</div>
+          <div class="check-tool">TOS → Positions</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DURING MARKET -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">📊</div>
+      <div class="card-title">During Market</div>
+      <div class="card-count"><span id="dm-done">0</span>/<span id="dm-total">0</span></div>
+    </div>
+    <div class="card-body" id="dm-body">
+
+      <div class="section-label">First Hour (9:30–10:30)</div>
+      <div class="check-item" onclick="toggle(this)" data-group="dm">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">Observe only — NO trades <span class="tag-nn">non-neg</span></div>
+          <div class="check-tool">Watch price action, volume, bid/ask spreads</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)" data-group="dm">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">Does market context match pre-market read?</div>
+          <div class="check-tool">SPY/VIX confirming or diverging?</div>
+        </div>
+      </div>
+
+      <div class="section-label">Trade Entry (after 10:30)</div>
+      <div class="check-item" onclick="toggle(this)" data-group="dm">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">A+ Scorecard on any setup before entering <span class="tag-nn">non-neg</span></div>
+          <div class="check-tool"><a href="#">→ Scorecard HTML file</a></div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)" data-group="dm">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">✅ Analyze tab risk profile before entry <span class="tag-nn">non-neg</span></div>
+          <div class="check-tool">TOS → Analyze tab — no exceptions</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)" data-group="dm">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">Position size — max 1–2% account risk per trade</div>
+          <div class="check-tool">$42K account — $420 (1%) / $840 (2%) max loss</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)" data-group="dm">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">Correlation check — existing positions in same sector?</div>
+          <div class="check-tool">Liberation Day lesson — no stacked correlated risk</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)" data-group="dm">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">Check macro calendar — any events today/this week?</div>
+          <div class="check-tool"><a href="https://www.barchart.com/economy/economic-calendar" target="_blank">→ Barchart Economic Calendar</a></div>
+        </div>
+      </div>
+
+      <div class="section-label">Do Nothing Zone</div>
+      <div class="check-item" onclick="toggle(this)" data-group="dm">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">Let theta work — no alerts triggered = no action</div>
+          <div class="check-tool">Trust the plan. Theta decays every minute.</div>
+        </div>
+      </div>
+    </div>
+    <div class="analyze-reminder">⚡ Analyze tab → Risk Profile before EVERY entry or adjustment</div>
+  </div>
+
+  <!-- END OF DAY -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">🌙</div>
+      <div class="card-title">End of Day</div>
+      <div class="card-count"><span id="eod-done">0</span>/<span id="eod-total">0</span></div>
+    </div>
+    <div class="card-body" id="eod-body">
+
+      <div class="section-label">Log & Journal</div>
+      <div class="check-item" onclick="toggle(this)" data-group="eod">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">Log all trades in TradesViz — all 5 tags <span class="tag-nn">non-neg</span></div>
+          <div class="check-tool"><a href="https://www.tradesviz.com" target="_blank">→ TradesViz</a></div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)" data-group="eod">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">Screenshot: entry chart + risk profile</div>
+          <div class="check-tool">→ Notion Trade Journal</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)" data-group="eod">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">Complete EOD check-in section <span class="tag-nn">non-neg</span></div>
+          <div class="check-tool"><a href="#">→ Daily Check-in HTML → Claude</a></div>
+        </div>
+      </div>
+
+      <div class="section-label">Evening Research <span class="tag-new">new</span></div>
+      <div class="check-item" onclick="toggle(this)" data-group="eod">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">Run Market Chameleon screener — 100-stock watchlist</div>
+          <div class="check-tool"><a href="https://marketchameleon.com" target="_blank">→ Market Chameleon</a> · CSP/BPS filter</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)" data-group="eod">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">Filter: delta ~0.30, IV Rank, earnings clearance</div>
+          <div class="check-tool">Tier 1 first → Tier 2 → Tier 3 (higher bar)</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)" data-group="eod">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">Finviz technical check on survivors</div>
+          <div class="check-tool"><a href="https://elite.finviz.com" target="_blank">→ Finviz</a> · Above 20/50/200 SMA?</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)" data-group="eod">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">Shortlist 2-3 names — ready for tomorrow morning</div>
+          <div class="check-tool">Note strike, credit, delta, earnings date</div>
+        </div>
+      </div>
+
+      <div class="section-label">Study Block (~60 min)</div>
+      <div class="check-item" onclick="toggle(this)" data-group="eod">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">Study block — 2 interleaved topics</div>
+          <div class="check-tool">Books / Otter / Outlier Trading</div>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggle(this)" data-group="eod">
+        <div class="check-box"><div class="check-mark">✓</div></div>
+        <div class="check-content">
+          <div class="check-label">Feynman write-out — one concept in plain English</div>
+          <div class="check-tool">→ Notion Study Journal</div>
+        </div>
+      </div>
+    </div>
+    <div class="tier-reminder">
+      Screener tier order: Tier 1 (mega/blue chip) → Tier 2 (mid cap) → Tier 3 (speculative, higher bar only)
+    </div>
+  </div>
+</div>
+
+<!-- ===================== DAY-SPECIFIC ===================== -->
+<div class="layout-wide">
+
+  <!-- LEFT: Day-specific tasks -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">📅</div>
+      <div class="card-title">Today's Focus</div>
+      <div class="card-count"><span id="day-done">0</span>/<span id="day-total">0</span></div>
+    </div>
+    <div class="card-body">
+
+      <!-- MON -->
+      <div class="day-section" id="day-mon">
+        <div class="section-label">Monday</div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">Full market context review — where are we vs last week?</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">SR Pillar focus for this week (see 90-Day Tracker)</div><div class="check-tool">→ Notion 90-Day Learning Tracker</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">Interleave topic 1 + topic 2 from weekly theme</div></div>
+        </div>
+      </div>
+
+      <!-- TUE -->
+      <div class="day-section" id="day-tue">
+        <div class="section-label">Tuesday</div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">Active recall — reconstruct Monday's concepts without notes</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">Add new Anki cards from Monday's study session</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">Educator content — Outlier Trading / SMB / Grimes</div><div class="check-tool">Log to Study Journal Session Log</div></div>
+        </div>
+      </div>
+
+      <!-- WED -->
+      <div class="day-section" id="day-wed">
+        <div class="section-label">Wednesday</div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">Chart study — pick 1 setup from this week's watchlist</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">Document in Study Journal: Part 3 — Chart Studies</div><div class="check-tool">→ Notion Study Journal</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">Feynman: explain today's best setup to imaginary OTI Discord member</div></div>
+        </div>
+      </div>
+
+      <!-- THU -->
+      <div class="day-section" id="day-thu">
+        <div class="section-label">Thursday</div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">Primary book — current phase reading (Natenberg/Passarelli)</div><div class="check-tool">→ Otter.ai recordings</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">Psychology reading — 15 min Steenbarger or Douglas</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">Review open positions — any kill switch levels approaching?</div><div class="check-tool">TOS → Positions + Analyze tab</div></div>
+        </div>
+      </div>
+
+      <!-- FRI -->
+      <div class="day-section" id="day-fri">
+        <div class="section-label">Friday</div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">Weekly recap scan — which trades worked, which didn't</div><div class="check-tool">→ TradesViz</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">Full TradesViz tag review — all 5 categories on every trade</div><div class="check-tool"><a href="https://www.tradesviz.com" target="_blank">→ TradesViz</a></div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">Week-in-review: best setup + worst process mistake</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">Pre-load Sunday — fill mental state section of Coach template</div></div>
+        </div>
+      </div>
+
+      <!-- SAT -->
+      <div class="day-section" id="day-sat">
+        <div class="section-label">Saturday (optional)</div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">Extended study — deeper reading from primary book</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">Anki extended session — 30+ cards</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">Chart studies from the week — any setups worth documenting?</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">Edge research — any hypothesis worth tracking?</div></div>
+        </div>
+      </div>
+
+      <!-- SUN -->
+      <div class="day-section" id="day-sun">
+        <div class="section-label">Sunday <span class="tag-nn">non-neg</span></div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">Anki SR deck — full review session</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">TradesViz full week filter — by strategy, regime, vol, outcome</div><div class="check-tool"><a href="https://www.tradesviz.com" target="_blank">→ TradesViz</a></div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">Sunday Coach Template — all 8 sections</div><div class="check-tool">→ Notion Sunday Coach Sessions</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">Open Claude — run Sunday coaching session</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">Set Regime for next week</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">Update 90-Day Learning Tracker</div><div class="check-tool">→ Notion</div></div>
+        </div>
+        <div class="check-item" onclick="toggle(this)" data-group="day">
+          <div class="check-box"><div class="check-mark">✓</div></div>
+          <div class="check-content"><div class="check-label">ONE fix committed for next week — write it down</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- RIGHT: Screener reminder + tools -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">🔧</div>
+      <div class="card-title">Tools & Rules</div>
+    </div>
+    <div class="card-body">
+      <div class="section-label">Screener Stack</div>
+      <div class="check-item" style="cursor:default;">
+        <div class="check-content">
+          <div class="check-label">CSP/BPS candidates</div>
+          <div class="check-tool"><a href="https://marketchameleon.com" target="_blank">→ Market Chameleon</a> — 100-stock watchlist first</div>
+        </div>
+      </div>
+      <div class="check-item" style="cursor:default;">
+        <div class="check-content">
+          <div class="check-label">Technical confirmation</div>
+          <div class="check-tool"><a href="https://elite.finviz.com" target="_blank">→ Finviz</a> — above 20/50/200 SMA</div>
+        </div>
+      </div>
+      <div class="check-item" style="cursor:default;">
+        <div class="check-content">
+          <div class="check-label">IV confirmation</div>
+          <div class="check-tool"><a href="https://www.barchart.com" target="_blank">→ Barchart Premium</a></div>
+        </div>
+      </div>
+      <div class="check-item" style="cursor:default;">
+        <div class="check-content">
+          <div class="check-label">Position research + entry</div>
+          <div class="check-tool">ThinkorSwim (exclusive platform)</div>
+        </div>
+      </div>
+
+      <div class="section-label">Trade Parameters</div>
+      <div class="check-item" style="cursor:default;">
+        <div class="check-content">
+          <div class="check-label">Target delta: ~0.30</div>
+          <div class="check-tool">Tier 2/3 names require higher IV Rank bar</div>
+        </div>
+      </div>
+      <div class="check-item" style="cursor:default;">
+        <div class="check-content">
+          <div class="check-label">Max risk: 1–2% per trade</div>
+          <div class="check-tool">$42K acct → $420 (1%) / $840 (2%) max loss</div>
+        </div>
+      </div>
+      <div class="check-item" style="cursor:default;">
+        <div class="check-content">
+          <div class="check-label">SMAs: 20 / 50 / 200 on all timeframes</div>
+          <div class="check-tool">Daily → 4H → 30min → execution</div>
+        </div>
+      </div>
+      <div class="check-item" style="cursor:default;">
+        <div class="check-content">
+          <div class="check-label">Profit target: 50% of credit received</div>
+          <div class="check-tool">Set GTC BTC order at entry</div>
+        </div>
+      </div>
+
+      <div class="section-label">Liberation Day Rule</div>
+      <div class="check-item" style="cursor:default; border-left: 2px solid var(--danger);">
+        <div class="check-content">
+          <div class="check-label" style="color:var(--danger);">No stacked correlated positions during macro events</div>
+          <div class="check-tool">Check sector overlap before every entry</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Rhythm footer -->
+<div class="rhythm">
+  <div class="rhythm-label">The Rhythm</div>
+  <div class="rhythm-text">Anki every morning · Study every evening · Log every trade same day · Review every Sunday · One fix per week</div>
+</div>
+
+<script>
+  const DAYS = ['sun','mon','tue','wed','thu','fri','sat'];
+  const DAY_NAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  let currentDay = '';
+
+  function init() {
+    const now = new Date();
+    const dayIdx = now.getDay();
+    const dayKey = DAYS[dayIdx];
+    document.getElementById('dateDisplay').textContent =
+      `${DAY_NAMES[dayIdx]}, ${MONTHS[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+    setDay(dayKey);
+    updateProgress();
+  }
+
+  function setDay(day) {
+    currentDay = day;
+    // Update buttons
+    document.querySelectorAll('.day-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.day-btn').forEach(btn => {
+      if (btn.textContent.toLowerCase() === day) btn.classList.add('active');
+    });
+    // Update badge
+    document.getElementById('dayBadge').textContent = day.toUpperCase();
+    // Show correct day section
+    document.querySelectorAll('.day-section').forEach(s => s.classList.remove('active'));
+    const section = document.getElementById('day-' + day);
+    if (section) section.classList.add('active');
+    updateProgress();
+  }
+
+  function toggle(el) {
+    el.classList.toggle('checked');
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const groups = ['pm', 'dm', 'eod', 'day'];
+    let totalAll = 0, doneAll = 0;
+
+    groups.forEach(g => {
+      let items;
+      if (g === 'day') {
+        const activeSection = document.querySelector('.day-section.active');
+        items = activeSection ? activeSection.querySelectorAll('.check-item[data-group="day"]') : [];
+      } else {
+        items = document.querySelectorAll(`.check-item[data-group="${g}"]`);
+      }
+      const total = items.length;
+      const done = [...items].filter(i => i.classList.contains('checked')).length;
+
+      const doneEl = document.getElementById(`${g}-done`);
+      const totalEl = document.getElementById(`${g}-total`);
+      if (doneEl) doneEl.textContent = done;
+      if (totalEl) totalEl.textContent = total;
+
+      totalAll += total;
+      doneAll += done;
+    });
+
+    const pct = totalAll > 0 ? Math.round((doneAll / totalAll) * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = `${doneAll} / ${totalAll}`;
+  }
+
+  function resetAll() {
+    document.querySelectorAll('.check-item.checked').forEach(el => el.classList.remove('checked'));
+    updateProgress();
+  }
+
+  init();
+</script>
+</body>
+</html>
