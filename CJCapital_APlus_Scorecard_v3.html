@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CJ Capital — A+ Scorecard v3</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0d0f12;--surface:#161a1f;--surface2:#1e2329;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --text:#e8eaed;--muted:#6b7280;--faint:#374151;
+  --blue:#3b82f6;--blue-bg:rgba(59,130,246,0.1);
+  --green:#22c55e;--green-bg:rgba(34,197,94,0.1);
+  --amber:#f59e0b;--amber-bg:rgba(245,158,11,0.1);
+  --red:#ef4444;--red-bg:rgba(239,68,68,0.1);
+  --purple:#a78bfa;--purple-bg:rgba(167,139,250,0.1);
+  --cyan:#06b6d4;--cyan-bg:rgba(6,182,212,0.1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:10;flex-wrap:wrap;gap:8px}
+.logo{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--cyan);letter-spacing:.05em}
+.score-display{display:flex;align-items:baseline;gap:8px}
+.score-big{font-family:'DM Mono',monospace;font-size:28px;font-weight:500;color:var(--text);transition:color .3s}
+.score-max{font-size:14px;color:var(--muted)}
+.grade-badge{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;padding:3px 10px;border-radius:20px;transition:all .3s}
+.main{max-width:820px;margin:0 auto;padding:24px 20px 60px}
+.ticker-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px}
+.ticker-field{background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:10px 14px}
+.ticker-field label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);display:block;margin-bottom:4px}
+.ticker-field input{width:100%;background:transparent;border:none;outline:none;font-family:'DM Mono',monospace;font-size:15px;font-weight:500;color:var(--text)}
+.ticker-field input::placeholder{color:var(--faint)}
+.dte-section{background:var(--surface);border:1px solid rgba(6,182,212,0.25);border-radius:14px;padding:16px;margin-bottom:20px}
+.dte-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--cyan);margin-bottom:10px}
+.dte-btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.dte-btn{font-size:12px;font-weight:500;padding:6px 14px;border-radius:20px;border:1px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;transition:all .15s}
+.dte-btn:hover{color:var(--text);border-color:rgba(255,255,255,.25)}
+.dte-btn.active{background:var(--cyan-bg);border-color:rgba(6,182,212,.4);color:var(--cyan)}
+.dte-ref{font-size:12px;color:#9ca3af;line-height:1.7;padding:10px 12px;background:var(--surface2);border-radius:8px}
+.dte-ref strong{color:var(--cyan);font-weight:500}
+.progress-bar{height:3px;background:var(--faint);border-radius:2px;margin-bottom:20px;overflow:hidden}
+.progress-fill{height:100%;border-radius:2px;transition:width .4s,background .4s;background:var(--blue)}
+.pillar{background:var(--surface);border:1px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden;transition:border-color .2s}
+.pillar.complete{border-color:var(--border2)}
+.pillar-header{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;cursor:pointer;user-select:none}
+.pillar-left{display:flex;align-items:center;gap:10px}
+.pillar-dot{width:8px;height:8px;border-radius:50%;background:var(--faint);transition:background .3s;flex-shrink:0}
+.pillar.complete .pillar-dot{background:var(--green)}
+.pillar-name{font-size:14px;font-weight:500;color:var(--text)}
+.pillar-weight{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace}
+.pillar-score-badge{font-family:'DM Mono',monospace;font-size:13px;font-weight:500;padding:2px 10px;border-radius:20px;background:var(--surface2);color:var(--muted);transition:all .3s;min-width:60px;text-align:center}
+.criteria-list{padding:0 18px 14px;border-top:1px solid var(--border)}
+.criterion{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+.criterion:last-child{border-bottom:none}
+.criterion-label{font-size:13px;color:#9ca3af;line-height:1.45}
+.btn-group{display:flex;gap:4px;flex-shrink:0}
+.score-btn{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;padding:5px 9px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;transition:all .12s;white-space:nowrap}
+.score-btn:hover{border-color:rgba(255,255,255,.25);color:var(--text)}
+.score-btn.sel-full{background:var(--green-bg);border-color:rgba(34,197,94,.4);color:var(--green)}
+.score-btn.sel-partial{background:var(--amber-bg);border-color:rgba(245,158,11,.4);color:var(--amber)}
+.score-btn.sel-none{background:var(--red-bg);border-color:rgba(239,68,68,.4);color:var(--red)}
+.hardstop{display:none;margin:0 18px 14px;padding:8px 12px;background:var(--red-bg);border:1px solid rgba(239,68,68,.3);border-radius:8px;font-size:12px;color:var(--red);font-family:'DM Mono',monospace;line-height:1.4}
+.verdict-card{background:var(--surface);border:1px solid var(--border2);border-radius:16px;padding:24px;margin-top:20px;text-align:center}
+.verdict-score{font-family:'DM Mono',monospace;font-size:56px;font-weight:500;line-height:1;margin-bottom:8px;transition:color .3s}
+.verdict-grade{font-size:16px;font-weight:600;letter-spacing:.05em;margin-bottom:12px;transition:color .3s}
+.verdict-text{font-size:14px;color:var(--muted);line-height:1.6;max-width:500px;margin:0 auto 20px}
+.verdict-text strong{color:var(--text);font-weight:500}
+.pillar-breakdown{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:16px}
+.breakdown-item{background:var(--surface2);border-radius:8px;padding:8px;text-align:center}
+.breakdown-val{font-family:'DM Mono',monospace;font-size:16px;font-weight:500;color:var(--text)}
+.breakdown-name{font-size:10px;color:var(--muted);margin-top:2px}
+.reset-btn{margin-top:16px;font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 20px;border-radius:8px;border:1px solid var(--border2);background:var(--surface2);color:var(--muted);cursor:pointer;transition:all .15s}
+.reset-btn:hover{color:var(--text);border-color:rgba(255,255,255,.25)}
+.version-tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--faint);text-align:right;margin-bottom:16px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">CJ CAPITAL // A+ SCORECARD <span style="font-size:10px;opacity:.5;margin-left:6px">v3</span></div>
+  <div class="score-display">
+    <div class="score-big" id="hdr-score">0</div>
+    <div class="score-max">/ 100</div>
+    <div class="grade-badge" id="hdr-grade" style="background:var(--surface2);color:var(--muted)">—</div>
+  </div>
+</header>
+
+<div class="main">
+
+  <div class="version-tag">Playbook v3 — DTE-based delta framework</div>
+
+  <div class="ticker-row">
+    <div class="ticker-field"><label>Ticker</label><input type="text" id="f-ticker" placeholder="AAPL" style="text-transform:uppercase"></div>
+    <div class="ticker-field"><label>Strategy</label><input type="text" id="f-strategy" placeholder="Bull Put"></div>
+    <div class="ticker-field"><label>Date</label><input type="date" id="f-date"></div>
+  </div>
+
+  <!-- DTE selector - required before scoring -->
+  <div class="dte-section">
+    <div class="dte-title">Step 1 — Select DTE framework</div>
+    <div class="dte-btns">
+      <button class="dte-btn" id="dte-short" onclick="setDTE('short')">21–30 DTE &nbsp;·&nbsp; Gavin / OTIQ</button>
+      <button class="dte-btn" id="dte-standard" onclick="setDTE('standard')">45–60 DTE &nbsp;·&nbsp; Tastytrade</button>
+      <button class="dte-btn" id="dte-long" onclick="setDTE('long')">60+ DTE &nbsp;·&nbsp; Diagonal / PMCC</button>
+    </div>
+    <div class="dte-ref" id="dte-ref">Select the DTE framework above. This determines the delta target and adjustment trigger for this trade.</div>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+
+  <div id="pillars"></div>
+
+  <div class="verdict-card" id="verdict">
+    <div class="verdict-score" id="v-score" style="color:var(--muted)">—</div>
+    <div class="verdict-grade" id="v-grade" style="color:var(--muted)">Select DTE and score all 5 pillars</div>
+    <div class="verdict-text" id="v-text">Complete the DTE selector and all criteria above to receive your Gate 1 verdict.</div>
+    <div class="pillar-breakdown" id="v-breakdown"></div>
+    <button class="reset-btn" onclick="resetAll()">Reset scorecard</button>
+  </div>
+
+</div>
+
+<script>
+const DTE = {
+  short: {
+    label:'21–30 DTE (Gavin / OTIQ)',
+    delta:'~0.15–0.20',
+    trigger:'~0.25',
+    html:'<strong>21–30 DTE framework (Gavin / OTIQ):</strong> Delta target <strong>~0.15–0.20</strong> on short strike &nbsp;|&nbsp; Adjustment trigger: delta → <strong>~0.25</strong> &nbsp;|&nbsp; Short strike below key support, outside expected move &nbsp;|&nbsp; Priority: Structure > Expected Move > Delta'
+  },
+  standard: {
+    label:'45–60 DTE (Tastytrade)',
+    delta:'~0.25–0.30',
+    trigger:'~0.40',
+    html:'<strong>45–60 DTE framework (Tastytrade):</strong> Delta target <strong>~0.25–0.30</strong> on short strike &nbsp;|&nbsp; Adjustment trigger: delta → <strong>~0.40</strong> &nbsp;|&nbsp; Short strike below key support, outside expected move &nbsp;|&nbsp; Priority: Structure > Expected Move > Delta'
+  },
+  long: {
+    label:'60+ DTE (Diagonal / PMCC)',
+    delta:'~0.30',
+    trigger:'~0.40',
+    html:'<strong>60+ DTE framework (Diagonal / PMCC):</strong> Short leg delta <strong>~0.30</strong> &nbsp;|&nbsp; Long leg delta <strong>~0.70–0.75</strong> &nbsp;|&nbsp; Adjustment trigger: delta → <strong>~0.40</strong> &nbsp;|&nbsp; Hard cap: $150 max loss on Diagonal / PMCC'
+  }
+};
+
+let activeDTE = null;
+
+const PILLARS = [
+  { id:'p1', name:'Market context', weight:20, color:'var(--blue)', colorBg:'var(--blue-bg)',
+    criteria:[
+      {l:'SPY/QQQ trend confirmed Daily + 65m — bullish, bearish, or flat with no conflict', full:20, partial:12, none:0},
+      {l:'No major macro event risk today (FOMC, CPI, earnings cluster)', full:0, partial:0, none:-5, pen:true},
+      {l:'Regime tag is Normal — portfolio heat controlled', full:0, partial:0, none:-5, pen:true},
+    ],
+    hs:'Market structure unclear on required timeframe → NO TRADE regardless of score'
+  },
+  { id:'p2', name:'Structure (technical)', weight:25, color:'var(--cyan)', colorBg:'var(--cyan-bg)',
+    criteria:[
+      {l:'Clear support/resistance level defined on Daily chart', full:10, partial:6, none:0},
+      {l:'Multi-timeframe alignment: Daily + 4H + 30-min all support trade direction', full:10, partial:5, none:0},
+      {l:'20/50/200 SMA context confirms trend — not trading against all 3 SMAs', full:5, partial:3, none:0},
+    ],
+    hs:'Structure unclear on any required timeframe → NO TRADE'
+  },
+  { id:'p3', name:'Volatility (IVR)', weight:20, color:'var(--amber)', colorBg:'var(--amber-bg)',
+    criteria:[
+      {l:'IVR environment matches strategy: High/Med for credit, Low/Med for debit', full:15, partial:8, none:0},
+      {l:'IV term structure supports the trade — no adverse IV crush risk at entry', full:5, partial:3, none:0},
+    ],
+    hs:'IVR works against strategy direction (selling into IVR: Low) → NO TRADE'
+  },
+  { id:'p4', name:'Strategy fit', weight:20, color:'var(--purple)', colorBg:'var(--purple-bg)',
+    criteria:[
+      {l:'Strategy matches the exact market environment per Playbook Section 4 template', full:12, partial:6, none:0},
+      {l:'Trade Condition tag clearly defined (Pullback / Breakout / Campaign / ETF / Hedge)', full:5, partial:3, none:0},
+      {l:'Not a forced fit — this is the right tool for this setup', full:3, partial:1, none:0},
+    ],
+    hs:'Strategy is a forced fit or not in approved strategy universe → NO TRADE'
+  },
+  { id:'p5', name:'Risk / reward', weight:15, color:'var(--green)', colorBg:'var(--green-bg)',
+    criteria:[
+      {l:'Credit meets benchmark: $5 wide → min $0.65 | $10 wide → min $1.00', full:8, partial:4, none:0},
+      {l:'Short strike below key support, outside expected move — Priority: Structure > Expected Move > Delta', full:4, partial:2, none:0},
+      {l:'Delta matches DTE framework (select above) | Max loss ≤ 1–2% confirmed on Analyze tab', full:3, partial:0, none:0, dteAware:true},
+    ],
+    hs:'Risk > 2% of account OR Analyze tab not reviewed OR delta does not match DTE framework → HARD BLOCK'
+  }
+];
+
+const state = {};
+
+function setDTE(d) {
+  activeDTE = d;
+  document.querySelectorAll('.dte-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('dte-'+d).classList.add('active');
+  document.getElementById('dte-ref').innerHTML = DTE[d].html;
+  // Update DTE-aware criterion label in p5
+  const el = document.getElementById('p5-cr-2-lbl');
+  if(el) el.textContent = 'Delta target: ' + DTE[d].delta + ' on short strike | Adj trigger: ' + DTE[d].trigger + ' | Max loss ≤ 1–2% confirmed on Analyze tab';
+  recalc();
+}
+
+function buildPillars() {
+  const c = document.getElementById('pillars');
+  c.innerHTML = '';
+  PILLARS.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'pillar'; div.id = 'pillar-'+p.id;
+    let crit = '';
+    p.criteria.forEach((cr,ci) => {
+      const full = cr.pen ? 'N/A' : '+'+cr.full;
+      const partial = cr.pen ? cr.none : '+'+cr.partial;
+      const none = cr.none;
+      const labelId = cr.dteAware ? `id="${p.id}-cr-${ci}-lbl"` : '';
+      const labelTxt = cr.dteAware ? 'Select DTE framework above — delta target will appear here | Max loss ≤ 1–2% confirmed on Analyze tab' : cr.l;
+      crit += `<div class="criterion"><div class="criterion-label" ${labelId}>${labelTxt}</div><div class="btn-group"><button class="score-btn" id="b-${p.id}-${ci}-full" onclick="sc('${p.id}',${ci},'full')">${full}</button><button class="score-btn" id="b-${p.id}-${ci}-partial" onclick="sc('${p.id}',${ci},'partial')">${partial}</button><button class="score-btn" id="b-${p.id}-${ci}-none" onclick="sc('${p.id}',${ci},'none')">${none}</button></div></div>`;
+    });
+    div.innerHTML = `<div class="pillar-header" onclick="toggle('${p.id}')"><div class="pillar-left"><div class="pillar-dot" id="dot-${p.id}"></div><div class="pillar-name">${p.name}</div><div class="pillar-weight">${p.weight} pts</div></div><div class="pillar-score-badge" id="badge-${p.id}" style="color:${p.color}">—</div></div><div class="criteria-list" id="clist-${p.id}">${crit}</div><div class="hardstop" id="hs-${p.id}">${p.hs}</div>`;
+    c.appendChild(div);
+  });
+}
+
+function toggle(pid) {
+  const cl = document.getElementById('clist-'+pid);
+  cl.style.display = cl.style.display==='none' ? '' : 'none';
+}
+
+function sc(pid,cid,val) {
+  if(!state[pid]) state[pid]={};
+  state[pid][cid]=val;
+  ['full','partial','none'].forEach(v=>{
+    const b=document.getElementById(`b-${pid}-${cid}-${v}`);
+    if(b) b.className='score-btn'+(v===val?' sel-'+val:'');
+  });
+  recalc();
+}
+
+function pillarScore(p) {
+  let s=0;
+  p.criteria.forEach((cr,ci)=>{
+    const v=state[p.id]?.[ci]??null;
+    if(v===null)return;
+    if(cr.pen){if(v==='none')s+=cr.none;}
+    else if(v==='full')s+=cr.full;
+    else if(v==='partial')s+=cr.partial;
+    else s+=cr.none;
+  });
+  return Math.max(0,s);
+}
+
+function pillarComplete(p) { return p.criteria.every((_,ci)=>(state[p.id]?.[ci]??null)!==null); }
+
+function recalc() {
+  let total=0, allComplete=true, scoredCriteria=0;
+  const totalCriteria=PILLARS.reduce((a,p)=>a+p.criteria.length,0);
+
+  PILLARS.forEach(p=>{
+    const s=pillarScore(p), complete=pillarComplete(p);
+    if(!complete)allComplete=false;
+    p.criteria.forEach((_,ci)=>{ if((state[p.id]?.[ci]??null)!==null)scoredCriteria++; });
+    const badge=document.getElementById('badge-'+p.id),dot=document.getElementById('dot-'+p.id),pEl=document.getElementById('pillar-'+p.id),hs=document.getElementById('hs-'+p.id);
+    if(complete){badge.textContent=s+' / '+p.weight;dot.style.background='var(--green)';pEl.classList.add('complete');hs.style.display=s<p.weight*0.5?'block':'none';}
+    else{badge.textContent='—';dot.style.background='var(--faint)';pEl.classList.remove('complete');hs.style.display='none';}
+    total+=s;
+  });
+
+  const pct=Math.round(scoredCriteria/totalCriteria*100);
+  document.getElementById('prog').style.width=pct+'%';
+
+  // Pillar breakdown
+  document.getElementById('v-breakdown').innerHTML=PILLARS.map(p=>{
+    const s=pillarComplete(p)?pillarScore(p):null;
+    return `<div class="breakdown-item"><div class="breakdown-val" style="color:${p.color}">${s!==null?s:'—'}</div><div class="breakdown-name">${p.name.split(' ')[0]}</div></div>`;
+  }).join('');
+
+  const vScore=document.getElementById('v-score'),vGrade=document.getElementById('v-grade'),vText=document.getElementById('v-text');
+  const hdrScore=document.getElementById('hdr-score'),hdrGrade=document.getElementById('hdr-grade');
+  hdrScore.textContent=total;
+
+  if(!allComplete||!activeDTE){
+    vScore.textContent=total||'—';vScore.style.color='var(--muted)';
+    vGrade.textContent=!activeDTE?'Select DTE framework first':'Score all 5 pillars';vGrade.style.color='var(--muted)';
+    vText.textContent='Complete the DTE selector and all criteria to receive your Gate 1 verdict.';
+    hdrGrade.textContent='—';hdrGrade.style.cssText='background:var(--surface2);color:var(--muted)';
+    document.getElementById('prog').style.background='var(--blue)';return;
+  }
+
+  const cfg=DTE[activeDTE];
+  vScore.textContent=total;
+
+  if(total>=90){
+    vScore.style.color='var(--green)';vGrade.textContent='A+ — EXECUTE FULL SIZE';vGrade.style.color='var(--green)';
+    vText.innerHTML=`<strong>Gate 1 PASS.</strong> A+ confirmed. ${cfg.label}: delta ${cfg.delta}, adj trigger ${cfg.trigger}. Proceed to Gate 2 — portfolio delta, gamma, theta, vega. Both green → place the trade.`;
+    hdrGrade.textContent='A+';hdrGrade.style.cssText='background:var(--green-bg);color:var(--green);border:1px solid rgba(34,197,94,.3)';
+    document.getElementById('prog').style.background='var(--green)';
+  } else if(total>=80){
+    vScore.style.color='var(--amber)';vGrade.textContent='A — REDUCED SIZE ONLY';vGrade.style.color='var(--amber)';
+    vText.innerHTML='<strong>Gate 1 PASS — reduced size.</strong> Half position only. Still requires Gate 2 pass. What is keeping this from A+?';
+    hdrGrade.textContent='A';hdrGrade.style.cssText='background:var(--amber-bg);color:var(--amber);border:1px solid rgba(245,158,11,.3)';
+    document.getElementById('prog').style.background='var(--amber)';
+  } else if(total>=70){
+    vScore.style.color='var(--blue)';vGrade.textContent='B — WATCHLIST ONLY';vGrade.style.color='var(--blue)';
+    vText.innerHTML='<strong>Gate 1 — do not trade.</strong> Log this setup. Identify which pillar is dragging. Check again tomorrow if conditions improve. Patience is a position.';
+    hdrGrade.textContent='B';hdrGrade.style.cssText='background:var(--blue-bg);color:var(--blue);border:1px solid rgba(59,130,246,.3)';
+    document.getElementById('prog').style.background='var(--blue)';
+  } else {
+    vScore.style.color='var(--red)';vGrade.textContent='F — STAND DOWN';vGrade.style.color='var(--red)';
+    vText.innerHTML='<strong>NO TRADE — stand down.</strong> Score below 70. This is not a CJ Capital setup. Close the option chain. Move on.';
+    hdrGrade.textContent='F';hdrGrade.style.cssText='background:var(--red-bg);color:var(--red);border:1px solid rgba(239,68,68,.3)';
+    document.getElementById('prog').style.background='var(--red)';
+  }
+}
+
+function resetAll() {
+  Object.keys(state).forEach(k=>delete state[k]);
+  activeDTE=null;
+  document.querySelectorAll('.dte-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('dte-ref').innerHTML='Select the DTE framework above. This determines the delta target and adjustment trigger for this trade.';
+  document.getElementById('f-ticker').value='';document.getElementById('f-strategy').value='';
+  buildPillars();recalc();
+}
+
+document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
+buildPillars();recalc();
+</script>
+</body>
+</html>
